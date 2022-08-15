@@ -6,9 +6,14 @@ async function readFs() {
   return JSON.parse(talkers);
 }
 
-readFs();
+async function writeFs(file) {
+  await fs.writeFile('./talker.json', JSON.stringify(file));
+}
+
+// readFs();
 // console.log(talker);
 
 module.exports = {
   readFs,
+  writeFs,
 };
