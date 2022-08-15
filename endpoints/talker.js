@@ -1,6 +1,8 @@
 const express = require('express');
 const rescue = require('express-rescue');
 const { readFs, writeFs } = require('../middlewares/readWrite');
+const { checkToken, checkName, checkAge,
+  checkTalk, checkWatched, checkRate } = require('../middlewares/newTalkerValidation');
 // const talkerJson = require('../talker.json');
 
 const OK_STATUS = 200;
@@ -8,6 +10,7 @@ const NOT_OK_STATUS = 404;
 const CREATED_STATUS = 201;
 
 const talker = express.Router();
+// talker.use(checkToken);
 
 talker.get('/talker', rescue(async (req, res) => {
   try {
@@ -34,7 +37,8 @@ talker.get('/talker/:id', rescue(async (req, res) => {
   }
 }));
 
-talker.post('/talker', async (req, res) => {
+talker.post('/talker', checkName, checkAge, checkTalk, 
+checkRate, checkWatched, async (req, res) => {
   try {
     const { name, age, talk } = req.body;
     const { watchedAt, rate } = talk;
@@ -49,4 +53,9 @@ talker.post('/talker', async (req, res) => {
   }
 });
 
+// talker.use(checkToken);
+
 module.exports = talker;
+
+// , checkToken, checkName, checkAge,
+// checkTalk, checkWatched, checkRate,
