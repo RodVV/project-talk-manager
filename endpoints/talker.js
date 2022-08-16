@@ -1,5 +1,4 @@
 const express = require('express');
-const rescue = require('express-rescue');
 const { readFs, writeFs } = require('../middlewares/readWrite');
 const { checkToken, checkName, checkAge,
   checkTalk, checkWatched, checkRate } = require('../middlewares/newTalkerValidation');
@@ -13,14 +12,14 @@ const NOT_OK_STATUS = 404;
 const talker = express.Router();
 // talker.use(checkToken);
 
-talker.get('/talker/search', async (req, res) => {
+talker.get('/talker/search', checkToken, async (req, res) => {
   const { q } = req.query;
   const result = await readFs();
   const filtered = result.filter((i) => i.name.includes(q));
   return res.status(OK_STATUS).json(filtered);
 });
 
-talker.get('/talker', rescue(async (req, res) => {
+talker.get('/talker', async (req, res) => {
   try {
     const result = await readFs();
     const empty = [];
@@ -29,9 +28,9 @@ talker.get('/talker', rescue(async (req, res) => {
   } catch (error) {
     return (error);
   }
-}));
+});
 
-talker.get('/talker/:id', rescue(async (req, res) => {
+talker.get('/talker/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const result = await readFs();
@@ -43,9 +42,9 @@ talker.get('/talker/:id', rescue(async (req, res) => {
   } catch (error) {
     return (error);
   }
-}));
+});
 
-talker.post('/talker', checkName, checkAge, checkTalk, 
+talker.post('/talker', checkToken, checkName, checkAge, checkTalk, 
 checkRate, checkWatched, async (req, res) => {
   try {
     const { name, age, talk } = req.body;
@@ -61,7 +60,7 @@ checkRate, checkWatched, async (req, res) => {
   }
 });
 
-talker.put('/talker/:id', checkName, checkAge, checkTalk, 
+talker.put('/talker/:id', checkToken, checkName, checkAge, checkTalk, 
 checkRate, checkWatched, async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,21 +76,19 @@ checkRate, checkWatched, async (req, res) => {
   }
 });
 
-talker.delete('/talker/:id', async (req, res) => {
-  try {
+talker.delete('/talker/:id', checkToken, async (req, res) => {
     const { id } = req.params;
     const result = await readFs();
     const filtered = result.filter((i) => i.id !== +id);
     await writeFs(filtered);
-    return res.status(NO_STATUS).json(filtered);
-  } catch (error) {
-    return (error);
-  }
+    return res.status(NO_STATUS).json(filtered);  
 });
 
 // talker.use(checkToken);
 
-module.exports = talker;
+module.exports = {
+  talker,
+};
 
 // , checkToken, checkName, checkAge,
 // checkTalk, checkWatched, checkRate,
