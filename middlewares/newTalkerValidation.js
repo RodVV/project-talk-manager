@@ -7,7 +7,7 @@ function checkToken(req, res, next) {
   switch (true) {
     case (!authorization):
       return res.status(UNAUTHORIZED_STATUS).json({ message: 'Token não encontrado' });
-    case (authorization.length < 16):
+    case (authorization.length !== 16):
       return ( 
       res.status(UNAUTHORIZED_STATUS).json({ message: 'Token inválido' })
       );

@@ -6,8 +6,9 @@ const { checkToken, checkName, checkAge,
 // const talkerJson = require('../talker.json');
 
 const OK_STATUS = 200;
-const NOT_OK_STATUS = 404;
 const CREATED_STATUS = 201;
+const NO_STATUS = 204;
+const NOT_OK_STATUS = 404;
 
 const talker = express.Router();
 // talker.use(checkToken);
@@ -48,6 +49,34 @@ checkRate, checkWatched, async (req, res) => {
     result.push(newTalker);
     await writeFs(result);
     return res.status(CREATED_STATUS).json(newTalker);
+  } catch (error) {
+    return (error);
+  }
+});
+
+talker.put('/talker/:id', checkName, checkAge, checkTalk, 
+checkRate, checkWatched, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, age, talk } = req.body;
+    const { watchedAt, rate } = talk;
+    const result = await readFs();
+    const index = result.findIndex((i) => i.id === +id);
+    result[index] = { ...result[index], name, age, talk: { watchedAt, rate } };
+    await writeFs(result);
+    return res.status(OK_STATUS).json(result[index]);
+  } catch (error) {
+    return (error);
+  }
+});
+
+talker.delete('/talker/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await readFs();
+    const filtered = result.filter((i) => i.id !== +id);
+    await writeFs(filtered);
+    return res.status(NO_STATUS).json(filtered);
   } catch (error) {
     return (error);
   }
