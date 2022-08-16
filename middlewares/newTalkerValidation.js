@@ -86,7 +86,7 @@ function checkRate(req, res, next) {
   const { rate } = talk;
   const regex = /^[1-5]$/;
   switch (true) {
-    case (!rate):
+    case (rate !== 0 && !rate):
       return res.status(BAD_STATUS).json({ message: 'O campo "rate" é obrigatório' });
     case (regex.test(rate) === false):
       return (
