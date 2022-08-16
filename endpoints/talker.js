@@ -13,6 +13,13 @@ const NOT_OK_STATUS = 404;
 const talker = express.Router();
 // talker.use(checkToken);
 
+talker.get('/talker/search', async (req, res) => {
+  const { q } = req.query;
+  const result = await readFs();
+  const filtered = result.filter((i) => i.name.includes(q));
+  return res.status(OK_STATUS).json(filtered);
+});
+
 talker.get('/talker', rescue(async (req, res) => {
   try {
     const result = await readFs();
