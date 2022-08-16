@@ -84,11 +84,11 @@ function checkWatched(req, res, next) {
 function checkRate(req, res, next) {
   const { talk } = req.body;
   const { rate } = talk;
-  
+  const regex = /^[1-5]$/;
   switch (true) {
-    case (!rate || rate === ''):
+    case (!rate):
       return res.status(BAD_STATUS).json({ message: 'O campo "rate" é obrigatório' });
-    case (rate > 5 || rate < 1):
+    case (regex.test(rate) === false):
       return (
         res.status(BAD_STATUS).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' })
       );
