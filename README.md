@@ -26,6 +26,7 @@ Para rodar o projeto desta forma, **obrigatoriamente** você deve ter o `node` i
 
 ---
 Passos do projeto:
+
 1 - Crie o endpoint GET `/talker` para que a requisição retorne o <code>status 200</code> e um array com todas as pessoas palestrantes cadastradas. 
 
 2 - Crie o endpoint GET `/talker/:id` para que a requisição retorne o <code>status 200</code> e uma pessoa palestrante com base no <code>id</code> da rota. Por exemplo, ao fazer uma requisição <code>/talker/1</code>, a resposta deve ser:</summary><br />
